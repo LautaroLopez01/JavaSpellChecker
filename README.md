@@ -1,0 +1,2 @@
+# JavaSpellChecker
+Spell Checker
