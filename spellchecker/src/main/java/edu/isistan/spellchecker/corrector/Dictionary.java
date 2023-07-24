@@ -1,6 +1,7 @@
 package edu.isistan.spellchecker.corrector;
 
 import java.io.*;
+import java.util.TreeSet;
 
 import edu.isistan.spellchecker.tokenizer.TokenScanner;
 
@@ -12,6 +13,7 @@ import edu.isistan.spellchecker.tokenizer.TokenScanner;
  * o apostrofes.
  */
 public class Dictionary {
+	private TreeSet<String> container;
 
 	/**
 	 * Construye un diccionario usando un TokenScanner
@@ -26,7 +28,16 @@ public class Dictionary {
 	 * @throws IllegalArgumentException el TokenScanner es null
 	 */
 	public Dictionary(TokenScanner ts) throws IOException {
-
+		if(ts == null){
+			throw new IllegalArgumentException();
+		}
+		container = new TreeSet<String>();
+		while (ts.hasNext()){
+			String word = ts.next();
+			if(TokenScanner.isWord(word)){
+				container.add(word.toLowerCase());
+			}
+		}
 	}
 
 	/**
@@ -52,7 +63,7 @@ public class Dictionary {
 	 * @return número de palabras únicas
 	 */
 	public int getNumWords() {
-		return -1;
+		return this.container.size();
 	}
 
 	/**
@@ -68,6 +79,9 @@ public class Dictionary {
 	 * @return si la palabra está en el diccionario.
 	 */
 	public boolean isWord(String word) {
+		if(word != null){
+			return container.contains(word.toLowerCase());
+		}
 		return false;
 	}
 }
