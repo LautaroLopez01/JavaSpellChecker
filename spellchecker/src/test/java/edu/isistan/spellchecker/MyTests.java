@@ -99,8 +99,8 @@ public class MyTests {
             Dictionary dictionary = new Dictionary(new TokenScanner(reader));
             SwapCorrector swapCorrector = new SwapCorrector(dictionary);
             Set<String> out = new TreeSet<>();
-            out.add("Yours");
-            assertEquals(out, swapCorrector.getCorrections("Yousr"));
+            out.add("carrot");
+            assertEquals(out, swapCorrector.getCorrections("caroRt"));
         } finally {
             reader.close();
         }
