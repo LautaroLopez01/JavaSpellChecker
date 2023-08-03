@@ -79,27 +79,23 @@ public class TokenScanner implements Iterator<String> {
      * @throws NoSuchElementException cuando se alcanzó el final de stream
      */
     public String next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No hay más tokens disponibles.");
+        }
+
         StringBuilder tokenBuilder = new StringBuilder();
+
         try {
-            while (currentChar != -1 && isWordCharacter(currentChar)) {
-                tokenBuilder.append((char) currentChar);
-                currentChar = reader.read();
-            }
-
-            if (tokenBuilder.length() == 0) {
-                while (currentChar != -1 && !isWordCharacter(currentChar)) {
+            if (isWordCharacter(currentChar) && hasNext()) {
+                while ((isWordCharacter(currentChar) && hasNext())) {
                     tokenBuilder.append((char) currentChar);
                     currentChar = reader.read();
                 }
-
-                if (tokenBuilder.length() == 0) {
+            } else {
+                while (!isWordCharacter(currentChar) && hasNext()) { // Se descarta token no palabra
                     tokenBuilder.append((char) currentChar);
                     currentChar = reader.read();
                 }
-            }
-
-            if (tokenBuilder.length() == 0) {
-                throw new NoSuchElementException("No hay más tokens disponibles.");
             }
 
             return tokenBuilder.toString();

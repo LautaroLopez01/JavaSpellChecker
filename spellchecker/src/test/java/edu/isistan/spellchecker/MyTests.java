@@ -40,32 +40,47 @@ public class MyTests {
 
     @Test
     public void testSingleNonWordToken() throws IOException {
-        String input = "123";
+        String input = "123 ";
         TokenScanner scanner = new TokenScanner(new StringReader(input));
+
+        assertFalse(TokenScanner.isWord("123 "));
+
         assertTrue(scanner.hasNext());
-        assertEquals("123", scanner.next());
+        assertEquals("123 ", scanner.next());
         assertFalse(scanner.hasNext());
     }
 
     //Corregir el token de la coma y el espacio.
     @Test
-    public void testMixedTokensEndingWithWord() throws IOException {
-        String input = "Hello, world!";
+    public void testDoubleTokensEndingWithWord() throws IOException {
+        String input = "123 Hello";
         TokenScanner scanner = new TokenScanner(new StringReader(input));
+
+        assertFalse(TokenScanner.isWord("123 "));
+        assertTrue(TokenScanner.isWord("Hello"));
+
+        assertTrue(scanner.hasNext());
+        assertEquals("123 ", scanner.next());
         assertTrue(scanner.hasNext());
         assertEquals("Hello", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals(",", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("world", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("!", scanner.next());
         assertFalse(scanner.hasNext());
     }
 
-    //agregar un test mas
+    @Test
+    public void testDoubleTokensEndingWithNonWord() throws IOException {
+        String input = "Hello 123";
+        TokenScanner scanner = new TokenScanner(new StringReader(input));
+
+        assertFalse(TokenScanner.isWord(" 123"));
+        assertTrue(TokenScanner.isWord("Hello"));
 
 
+        assertTrue(scanner.hasNext());
+        assertEquals("Hello", scanner.next());
+        assertTrue(scanner.hasNext());
+        assertEquals(" 123", scanner.next());
+        assertFalse(scanner.hasNext());
+    }
 
     /*
       --------------------- Dictionary Test ---------------------
