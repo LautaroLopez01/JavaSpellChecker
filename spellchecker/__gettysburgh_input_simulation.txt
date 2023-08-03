@@ -1,0 +1,57 @@
+// This sample run uses the provided SpellCheckerRunner class and
+// uses a FileCorrector to suggest corrections:
+ 
+$ java SpellCheckerRunner Gettysburg.txt Gettysburg-out.txt dictionary.txt misspellings.txt
+
+The word: "Fuor" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+2: Replace with "Four"
+3: Replace with "Furor"
+// Entered 2
+
+The word: "thsi" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+2: Replace with "this"
+// Entered 2
+
+The word: "Libert" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+// Entered 1
+// Entered Liberty
+
+The word: "civl" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+// Entered 1
+// Entered civil
+
+The word: "thta" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+2: Replace with "that"
+// Entered that
+Invalid input. Please try again!
+// Entered 2
+
+The word: "honored" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+// Entered 0
+
+The word: "higly" is not in the dictionary. Please enter the 
+number corresponding with the appropriate action:
+0: Ignore and continue
+1: Replace with another word
+// Entered 1
+// Entered highly
+
+Document completed

@@ -50,5 +50,6 @@ public class FileCorrector extends Corrector {
 		String wrongLowerCase = wrong.trim().toLowerCase();
 		Set<String> corrections = correctionsMap.getOrDefault(wrongLowerCase, Collections.emptySet());
 		return matchCase(wrong, corrections);
+
 	}
 }

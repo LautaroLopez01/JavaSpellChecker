@@ -53,4 +53,57 @@ public class FileCorrectorTest {
 	 }
   }
 
+  @Test
+  public void testFileWithExtraSpaces() throws IOException, FileCorrector.FormatException {
+    String inputFileContent = "  palabra1   ,   correccion1  \n" +
+            "palabra2,correccion2  \n" +
+            "  palabra3  ,   correccion3   ";
+    FileCorrector corrector = new FileCorrector(new StringReader(inputFileContent));
+
+    Set<String> corrections1 = corrector.getCorrections("palabra1");
+    assertEquals(1, corrections1.size());
+    assertTrue(corrections1.contains("correccion1"));
+
+    Set<String> corrections2 = corrector.getCorrections("palabra2");
+    assertEquals(1, corrections2.size());
+    assertTrue(corrections2.contains("correccion2"));
+
+    Set<String> corrections3 = corrector.getCorrections("palabra3");
+    assertEquals(1, corrections3.size());
+    assertTrue(corrections3.contains("correccion3"));
+  }
+
+  @Test
+  public void testWordWithoutCorrections() throws IOException, FileCorrector.FormatException {
+    String inputFileContent = "palabra,correccion";
+    FileCorrector corrector = new FileCorrector(new StringReader(inputFileContent));
+
+    Set<String> corrections = corrector.getCorrections("inexistente");
+    assertTrue(corrections.isEmpty());
+  }
+
+  @Test
+  public void testWordWithMultipleCorrections() throws IOException, FileCorrector.FormatException {
+    String inputFileContent =
+            "palabra,correccion1\n" +
+            "palabra,correccion2\n" +
+            "palabra,correccion3";
+    FileCorrector corrector = new FileCorrector(new StringReader(inputFileContent));
+
+    Set<String> corrections = corrector.getCorrections("palabra");
+
+    assertEquals(3, corrections.size());
+    assertTrue(corrections.contains("correccion1"));
+    assertTrue(corrections.contains("correccion2"));
+    assertTrue(corrections.contains("correccion3"));
+  }
+
+  @Test
+  public void testDistintasCapitalizacionesFileCorrector() throws IOException,FileCorrector.FormatException {
+    Corrector c = FileCorrector.make("misspellings.txt");
+    assertEquals("surPRiZe -> {surprise}", makeSet(new String[]{"surprise"}), c.getCorrections("surPRiZe"));
+    assertEquals("SUrPRiZe -> {Surprise}", makeSet(new String[]{"Surprise"}), c.getCorrections("SUrPRiZe"));
+    assertEquals("surPRiZe -> {surprise}", makeSet(new String[]{"surprise"}), c.getCorrections("surPRiZe"));
+  }
+
 }
