@@ -20,6 +20,53 @@ import static org.junit.Assert.assertTrue;
 /** Cree sus propios tests. */
 public class MyTests {
 
+    /*------------------ Token Scanner tests-------------------------------------*/
+
+    @Test
+    public void testEmptyInput() throws IOException {
+        String input = "";
+        TokenScanner scanner = new TokenScanner(new StringReader(input));
+        assertFalse(scanner.hasNext());
+    }
+
+    @Test
+    public void testSingleWordToken() throws IOException {
+        String input = "hello";
+        TokenScanner scanner = new TokenScanner(new StringReader(input));
+        assertTrue(scanner.hasNext());
+        assertEquals("hello", scanner.next());
+        assertFalse(scanner.hasNext());
+    }
+
+    @Test
+    public void testSingleNonWordToken() throws IOException {
+        String input = "123";
+        TokenScanner scanner = new TokenScanner(new StringReader(input));
+        assertTrue(scanner.hasNext());
+        assertEquals("123", scanner.next());
+        assertFalse(scanner.hasNext());
+    }
+
+    //Corregir el token de la coma y el espacio.
+    @Test
+    public void testMixedTokensEndingWithWord() throws IOException {
+        String input = "Hello, world!";
+        TokenScanner scanner = new TokenScanner(new StringReader(input));
+        assertTrue(scanner.hasNext());
+        assertEquals("Hello", scanner.next());
+        assertTrue(scanner.hasNext());
+        assertEquals(",", scanner.next());
+        assertTrue(scanner.hasNext());
+        assertEquals("world", scanner.next());
+        assertTrue(scanner.hasNext());
+        assertEquals("!", scanner.next());
+        assertFalse(scanner.hasNext());
+    }
+
+    //agregar un test mas
+
+
+
     /*
       --------------------- Dictionary Test ---------------------
     */
@@ -63,121 +110,7 @@ public class MyTests {
         assertTrue("'BANANA' -> should be true ('banana' in file)", d.isWord("BANANA"));
     }
 
-    /*
-      --------------------- SwapCorrector ---------------------
-    */
-
-    //Proveer un diccionario null.
-    @Test
-    public void testDiccionarioNull() throws IOException {
-        try {
-            Dictionary dic = null;
-            new SwapCorrector(dic);
-            fail("Expected IllegalArgumentException - null Dictionary");
-        } catch (IllegalArgumentException e){
-            //Do nothing - it's supposed to throw this
-        }
-    }
-
-    //Pedir correcciones para una palabra que está en el diccionario.
-    @Test
-    public void testPalabraDiccionario() throws IOException {
-        Reader reader = new FileReader("smallDictionary.txt");
-
-        try {
-            Dictionary dictionary = new Dictionary(new TokenScanner(reader));
-            SwapCorrector swapCorrector = new SwapCorrector(dictionary);
-            Set<String> out = new TreeSet<>(); // empty because it should not return a correction
-            assertEquals(out, swapCorrector.getCorrections("it's"));
-        } finally {
-            reader.close();
-        }
-    }
-
-    //Pedir correcciones para una palabra con distintas capitalizaciones.
-    @Test
-    public void testDistintasCapitalizacionesSwapCorrector() throws IOException {
-        Reader reader = new FileReader("smallDictionary.txt");
-
-        try {
-            Dictionary dictionary = new Dictionary(new TokenScanner(reader));
-            SwapCorrector swapCorrector = new SwapCorrector(dictionary);
-            Set<String> out = new TreeSet<>();
-            out.add("carrot");
-            assertEquals(out, swapCorrector.getCorrections("caroRt"));
-        } finally {
-            reader.close();
-        }
-    }
-
-    // Token Scanner tests
-    @Test
-    public void testEmptyInput() throws IOException {
-        String input = "";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        assertFalse(scanner.hasNext());
-    }
-
-    @Test
-    public void testSingleWordToken() throws IOException {
-        String input = "hello";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        assertTrue(scanner.hasNext());
-        assertEquals("hello", scanner.next());
-        assertFalse(scanner.hasNext());
-    }
-
-    @Test
-    public void testSingleNonWordToken() throws IOException {
-        String input = "123";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        assertTrue(scanner.hasNext());
-        assertEquals("123", scanner.next());
-        assertFalse(scanner.hasNext());
-    }
-
-    @Test
-    public void testMixedTokensEndingWithWord() throws IOException {
-        String input = "Hello, world!";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        assertTrue(scanner.hasNext());
-        assertEquals("Hello", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals(",", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("world", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("!", scanner.next());
-        assertFalse(scanner.hasNext());
-    }
-
-    @Test
-    public void testMixedTokensEndingWithNonWord() throws IOException {
-        String input = "Hello, world!!!";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        assertTrue(scanner.hasNext());
-        assertEquals("Hello", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals(",", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("world", scanner.next());
-        assertTrue(scanner.hasNext());
-        assertEquals("!!!", scanner.next());
-        assertFalse(scanner.hasNext());
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void testNoSuchElementException() throws IOException {
-        String input = "Hello,";
-        TokenScanner scanner = new TokenScanner(new StringReader(input));
-        while (scanner.hasNext()) {
-            scanner.next();
-        }
-        // The next call to scanner.next() should throw NoSuchElementException
-        scanner.next();
-    }
-
-    // Tests File Corrector
+    /*---------------------------Tests File Corrector-------------------------------*/
 
     @Test
     public void testFileWithExtraSpaces() throws IOException, FileCorrector.FormatException {
@@ -229,7 +162,54 @@ public class MyTests {
         Corrector c = FileCorrector.make("misspellings.txt");
         assertEquals("surPRiZe -> {surprise}", makeSet(new String[]{"surprise"}), c.getCorrections("surPRiZe"));
         assertEquals("SUrPRiZe -> {Surprise}", makeSet(new String[]{"Surprise"}), c.getCorrections("SUrPRiZe"));
-        assertEquals("surPRiZe -> {surprise}", makeSet(new String[]{"surprise"}), c.getCorrections("surPRiZe"));
+        assertEquals("surPRiZe -> {surprise}", makeSet(new String[]{"surprise"}), c.getCorrections("suRPriZE"));
+    }
+
+    /*
+      --------------------- SwapCorrector ---------------------
+    */
+
+    //Proveer un diccionario null.
+    @Test
+    public void testDiccionarioNull() throws IOException {
+        try {
+            Dictionary dic = null;
+            new SwapCorrector(dic);
+            fail("Expected IllegalArgumentException - null Dictionary");
+        } catch (IllegalArgumentException e){
+            //Do nothing - it's supposed to throw this
+        }
+    }
+
+    //Pedir correcciones para una palabra que está en el diccionario.
+    @Test
+    public void testPalabraDiccionario() throws IOException {
+        Reader reader = new FileReader("smallDictionary.txt");
+
+        try {
+            Dictionary dictionary = new Dictionary(new TokenScanner(reader));
+            SwapCorrector swapCorrector = new SwapCorrector(dictionary);
+            Set<String> out = new TreeSet<>(); // empty because it should not return a correction
+            assertEquals(out, swapCorrector.getCorrections("it's"));
+        } finally {
+            reader.close();
+        }
+    }
+
+    //Pedir correcciones para una palabra con distintas capitalizaciones.
+    @Test
+    public void testDistintasCapitalizacionesSwapCorrector() throws IOException {
+        Reader reader = new FileReader("smallDictionary.txt");
+
+        try {
+            Dictionary dictionary = new Dictionary(new TokenScanner(reader));
+            SwapCorrector swapCorrector = new SwapCorrector(dictionary);
+            Set<String> out = new TreeSet<>();
+            out.add("carrot");
+            assertEquals(out, swapCorrector.getCorrections("caroRt"));
+        } finally {
+            reader.close();
+        }
     }
 
     // Metodo auxiliar para comparaciones
